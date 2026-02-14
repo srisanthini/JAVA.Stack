@@ -1,0 +1,97 @@
+import java.util.Scanner;
+
+class Stack {
+    int size;
+    char arr[];
+    int top;
+
+    Stack(int val) {
+        size = val;
+        arr = new char[size];
+        top = -1;
+    }
+
+    void push(char val) {
+        if (top == size - 1) {
+            System.out.println("Stack Overflow");
+            return;
+        }
+        arr[++top] = val;
+    }
+
+    char pop() {
+        if (top == -1) {
+            return '#'; // empty symbol
+        }
+        return arr[top--];
+    }
+
+    char peek() {
+        if (top == -1) {
+            return '#';
+        }
+        return arr[top];
+    }
+
+    boolean isEmpty() {
+        return top == -1;
+    }
+}
+
+public class Main {
+
+    
+    static int precedence(char ch) {
+        if (ch == '+' || ch == '-')
+            return 1;
+        if (ch == '*' || ch == '/')
+            return 2;
+        if (ch == '^')
+            return 3;
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter infix expression: ");
+        String infix = sc.nextLine();
+
+        Stack stack = new Stack(infix.length());
+        String postfix = "";
+
+        for (int i = 0; i < infix.length(); i++) {
+            char ch = infix.charAt(i);
+
+            
+            if (Character.isLetterOrDigit(ch)) {
+                postfix += ch;
+            }
+           
+            else if (ch == '(') {
+                stack.push(ch);
+            }
+           
+            else if (ch == ')') {
+                while (!stack.isEmpty() && stack.peek() != '(') {
+                    postfix += stack.pop();
+                }
+                stack.pop();             }
+            
+            else {
+                while (!stack.isEmpty() &&
+                       precedence(stack.peek()) >= precedence(ch)) {
+                    postfix += stack.pop();
+                }
+                stack.push(ch);
+            }
+        }
+
+       
+        while (!stack.isEmpty()) {
+            postfix += stack.pop();
+        }
+
+        System.out.println("Postfix expression: " + postfix);
+    }
+}
